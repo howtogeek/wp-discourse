@@ -130,7 +130,10 @@ class Discourse {
 	function comments_number( $count ) {
 		global $post;
 		if( self::use_discourse_comments( $post->ID ) ) {
-			self::sync_comments( $post->ID );
+			// Only sync comments on the post page itself. Fixes really slow category/tag page loads.
+			if(is_single()){
+				self::sync_comments( $post->ID );
+			}
 			$count = get_post_meta( $post->ID, 'discourse_comments_count', true );
 			if( ! $count ) {
 				$count = 'Leave a reply';
